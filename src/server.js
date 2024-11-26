@@ -1,6 +1,8 @@
 import express from 'express'
 import { connectDB } from '~/config/connectDB'
 import { env } from '~/config/environment'
+import { errorHandlingMiddleware } from '~/middlewares/exampleMiddleware'
+import { API } from '~/routes'
 
 const app = express()
 
@@ -8,10 +10,9 @@ const app = express()
 connectDB()
 // --------------------CONFIG APP----------------------
 app.use(express.json({ limit: '10kb' }))
+app.use('/api', API)
 
-app.get('/', (req, res) => {
-  res.end('<h1>Hello World!</h1><hr>')
-})
+app.use(errorHandlingMiddleware)
 
 app.listen(env.LOCAL_DEV_APP_PORT, () => {
   console.log(`Hello everybody, I am running at ${env.LOCAL_DEV_APP_HOST}:${env.LOCAL_DEV_APP_PORT}`)
