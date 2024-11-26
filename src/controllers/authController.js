@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import { userService } from '~/services/userService'
+import { createSignToken } from '~/utils/createSignToken'
 
 const register = async (req, res, next) => {
   try {
@@ -17,10 +18,12 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const user = await userService.login(req.body)
+    user.password = undefined
+    const token = createSignToken(user, StatusCodes.OK, res)
 
     return res.status(StatusCodes.OK).json({
       message: 'Đăng nhập thành công',
-      data: user._id
+      data: { user, token }
     })
   } catch (error) {
     next(error)
