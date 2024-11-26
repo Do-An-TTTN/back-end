@@ -32,6 +32,11 @@ const courseSchema = new mongoose.Schema(
       type: String,
       enum: ['active', 'inactive', 'completed'],
       default: 'active'
+    },
+    categoryId: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Category',
+      required: [true, 'Course must have a Category']
     }
   },
   {
