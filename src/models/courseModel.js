@@ -6,6 +6,11 @@ const courseSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
+    title: {
+      type: String,
+      required: true,
+      trim: true
+    },
     slug: String,
     description: {
       type: String,

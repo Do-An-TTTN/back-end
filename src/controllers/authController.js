@@ -30,4 +30,8 @@ const login = async (req, res, next) => {
   }
 }
 
-export const authController = { register, login }
+const logout = async (req, res, next) => {
+  res.clearCookie('token').status(StatusCodes.OK).json({ status: 'Đăng xuất thành công' })
+}
+
+export const authController = { register, login, logout }
