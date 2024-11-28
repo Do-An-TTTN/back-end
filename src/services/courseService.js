@@ -23,7 +23,7 @@ const createNew = async (reqBody) => {
 
 const getAll = async () => {
   try {
-    const res = await Course.find()
+    const res = await Course.find().populate('categoryId').sort('-createdAt')
 
     return {
       message: 'Lấy tất cả sản phẩm',
