@@ -13,7 +13,8 @@ const createNews = async (reqBody) => {
     return {
       message: 'Create Successfully',
       data: {
-        ...res._doc
+        _id: res._doc._id,
+        tile: res._doc.title
       }
     }
   } catch (error) {
@@ -23,7 +24,7 @@ const createNews = async (reqBody) => {
 
 const getAllNews = async () => {
   try {
-    const res = await News.find()
+    const res = await News.find().populate('writerId')
     return {
       message: 'Tất cả bảng tin',
       data: res
@@ -35,13 +36,10 @@ const getAllNews = async () => {
 
 const getNews = async (_id) => {
   try {
-    const res = await News.findOne({ _id })
+    const res = await News.findOne({ _id }).populate('writerId')
     return {
       message: 'Thông tin chi tiết bài tin tức',
-      data: {
-        _id: res._id,
-        title: res.title
-      }
+      data: res
     }
   } catch (error) {
     throw error
@@ -58,7 +56,7 @@ const updateNews = async (_id, reqBody) => {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Không tìm thấy bài đăng')
     }
     return {
-      message: 'Thông tin chi tiết bài tin tức',
+      message: 'Sửa thông tin thành công',
       data: {
         _id: res._id,
         title: res.title

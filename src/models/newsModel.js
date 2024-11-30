@@ -7,10 +7,6 @@ const newsSchema = new mongoose.Schema(
       required: true,
       ref: 'User'
     },
-    writerName: {
-      type: String,
-      required: true
-    },
     title: {
       type: String,
       required: true
@@ -23,16 +19,14 @@ const newsSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    category: {
-      type: String,
-      required: true
-    },
     description: {
       type: String,
-      default: ''
+      default: '',
+      required: true
     },
-    date: {
+    content: {
       type: String,
+      default: '',
       required: true
     },
     count: {
