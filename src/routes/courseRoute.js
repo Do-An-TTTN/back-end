@@ -6,8 +6,10 @@ const router = express.Router()
 
 router.get('', courseController.getAllCourse)
 router.get('/:id', courseController.getCourse)
-router.post('', verifyToken, checkPermission('admin'), courseController.createCourse)
-router.post('', verifyToken, checkPermission('admin'), courseController.createCourse)
+
+router.use(verifyToken, checkPermission('admin'))
+router.post('', courseController.createCourse)
+router.post('', courseController.createCourse)
 router.delete('/:id', courseController.deleteCourse)
 router.put('/:id', courseController.updateCourse)
 
