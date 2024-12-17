@@ -30,7 +30,7 @@ const getAllCate = async () => {
 
 const getCate = async (id) => {
   try {
-    const res = await db.Course.findAll({ where: { categoryId: id }, attributes: ['name'] })
+    const res = await db.Course.findAll({ where: { categoryId: id } })
     return {
       message: 'Lấy chi tiết các Course thuộc Category',
       data: res

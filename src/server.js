@@ -16,6 +16,8 @@ connectDB()
 app.use(cors(corsOptions))
 app.use(express.json({ limit: '10kb' }))
 app.use(cookieParser())
+//---static file
+app.use('/images', express.static('public/images'))
 
 app.use('/api', API)
 
