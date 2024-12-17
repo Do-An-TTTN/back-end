@@ -1,9 +1,8 @@
-import Category from '~/models/categoryModel'
-import Course from '~/models/courseModel'
+import db from '~/models'
 
 const createCate = async (reqBody) => {
   try {
-    const res = await Category.create({ ...reqBody })
+    const res = await db.Category.create({ ...reqBody })
 
     return {
       message: 'Create Successfully',
@@ -18,7 +17,7 @@ const createCate = async (reqBody) => {
 
 const getAllCate = async () => {
   try {
-    const res = await Category.find()
+    const res = await db.Category.findAll()
 
     return {
       message: 'Lấy tất cả thể loại',
@@ -29,11 +28,11 @@ const getAllCate = async () => {
   }
 }
 
-const getCate = async (_id) => {
+const getCate = async (id) => {
   try {
-    const res = await Course.find({ categoryId: _id }).select('-__v -updatedAt -createdAt -categoryId')
+    const res = await db.Course.findAll({ where: { categoryId: id }, attributes: ['name'] })
     return {
-      message: 'Lấy chi tiết các sách thuộc thể loại',
+      message: 'Lấy chi tiết các Course thuộc Category',
       data: res
     }
   } catch (error) {
@@ -41,13 +40,13 @@ const getCate = async (_id) => {
   }
 }
 
-const deleteCate = async (_id) => {
+const deleteCate = async (id) => {
   try {
-    const res = await Category.deleteOne({ _id })
+    await db.Category.destroy({ where: { id } })
 
     return {
       message: 'Xóa thành công',
-      data: res._id
+      data: id
     }
   } catch (error) {
     throw error

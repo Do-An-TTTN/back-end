@@ -1,14 +1,12 @@
-import Contact from '~/models/contactModel'
+import db from '~/models'
 
 const createContact = async (reqBody) => {
   try {
-    const res = await Contact.create({ ...reqBody })
+    const res = await db.Contact.create({ ...reqBody })
 
     return {
       message: 'Create Successfully',
-      data: {
-        ...res._doc
-      }
+      data: res
     }
   } catch (error) {
     throw error
@@ -17,7 +15,7 @@ const createContact = async (reqBody) => {
 
 const getAllContact = async () => {
   try {
-    const res = await Contact.find()
+    const res = await db.Contact.findAll()
 
     return {
       message: 'Lấy tất cả thông tin liên hệ',
@@ -28,13 +26,13 @@ const getAllContact = async () => {
   }
 }
 
-const deleteContact = async (_id) => {
+const deleteContact = async (id) => {
   try {
-    const res = await Contact.deleteOne({ _id })
+    await db.Contact.deleteOne({ where: { id } })
 
     return {
       message: 'Xóa thành công',
-      data: res._id
+      data: id
     }
   } catch (error) {
     throw error

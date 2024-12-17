@@ -9,7 +9,6 @@ router.get('/:id', courseController.getCourse)
 
 router.use(verifyToken, checkPermission('admin'))
 router.post('', courseController.createCourse)
-router.post('', courseController.createCourse)
 router.delete('/:id', courseController.deleteCourse)
 router.put('/:id', courseController.updateCourse)
 

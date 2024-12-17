@@ -8,7 +8,7 @@ const WHITELIST_DOMAINS = [
 ]
 export const corsOptions = {
   origin: function (origin, callback) {
-    if (env.BUILD_MODE === 'dev') {
+    if (env.BUILD_MODE === 'development') {
       return callback(null, true)
     }
 

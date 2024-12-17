@@ -1,22 +1,19 @@
 import { StatusCodes } from 'http-status-codes'
-import Category from '~/models/categoryModel'
-import Course from '~/models/courseModel'
 import ApiError from '~/utils/ApiError'
 import slugify from '~/utils/slugify'
 
+import db from '~/models'
+
 const createNew = async (reqBody) => {
   try {
-    const res = await Course.create({
+    const res = await db.Course.create({
       ...reqBody,
       slug: slugify(reqBody.name)
     })
-    await Category.updateOne({ _id: res._doc.categoryId }, { $addToSet: { courseIds: res._doc._id } }, { returnDocument: 'after' })
 
     return {
       message: 'Create Successfully',
-      data: {
-        ...res._doc
-      }
+      data: res
     }
   } catch (error) {
     throw error
@@ -25,7 +22,7 @@ const createNew = async (reqBody) => {
 
 const getAll = async () => {
   try {
-    const res = await Course.find().populate('categoryId').sort('-createdAt')
+    const res = await db.Course.findAll()
 
     return {
       message: 'Lấy tất cả sản phẩm',
@@ -36,9 +33,9 @@ const getAll = async () => {
   }
 }
 
-const getOne = async (_id) => {
+const getOne = async (id) => {
   try {
-    const res = await Course.findOne({ _id }).select('-__v -createdAt -updatedAt')
+    const res = await db.Course.findOne({ where: { id } })
     if (!res) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'không tìm thấy sản phẩm')
     }
@@ -51,9 +48,9 @@ const getOne = async (_id) => {
   }
 }
 
-const deleteOne = async (_id) => {
+const deleteOne = async (id) => {
   try {
-    const res = await Course.deleteOne({ _id })
+    const res = await db.Course.destroy({ where: { id } })
 
     return {
       message: 'Xóa thành công',
@@ -64,17 +61,14 @@ const deleteOne = async (_id) => {
   }
 }
 
-const updateOne = async (_id, reqBody) => {
+const updateOne = async (id, reqBody) => {
   try {
-    const res = await Course.findByIdAndUpdate(_id, reqBody, {
-      new: true,
-      runValidators: true
+    const res = await db.Course.update(reqBody, {
+      where: { id }
     })
     if (!res) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'không tìm thấy sản phẩm')
     }
-
-    await Category.findOneAndUpdate({ _id: res.categoryId }, { $addToSet: { courseIds: res._id } }, { returnDocument: 'after' })
 
     return {
       message: 'Sửa thành công',

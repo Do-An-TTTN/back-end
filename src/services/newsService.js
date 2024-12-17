@@ -1,21 +1,18 @@
 import { StatusCodes } from 'http-status-codes'
-import Gallery from '~/models/galleryModel'
-import News from '~/models/newsModel'
+import db from '~/models'
+// import Gallery from '~/models/galleryModel'
 import ApiError from '~/utils/ApiError'
 import slugify from '~/utils/slugify'
 
 const createNews = async (reqBody) => {
   try {
-    const res = await News.create({
+    const res = await db.News.create({
       ...reqBody,
       slug: slugify(reqBody.title)
     })
     return {
       message: 'Create Successfully',
-      data: {
-        _id: res._doc._id,
-        tile: res._doc.title
-      }
+      data: res
     }
   } catch (error) {
     throw error
@@ -24,7 +21,8 @@ const createNews = async (reqBody) => {
 
 const getAllNews = async () => {
   try {
-    const res = await News.find().populate('writerId')
+    const res = await db.News.findAll({ include: { model: db.User, attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } } })
+
     return {
       message: 'Tất cả bảng tin',
       data: res
@@ -34,9 +32,9 @@ const getAllNews = async () => {
   }
 }
 
-const getNews = async (_id) => {
+const getNews = async (id) => {
   try {
-    const res = await News.findOne({ _id }).populate('writerId')
+    const res = await db.News.findOne({ where: { id }, include: { model: db.User, attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } } })
     return {
       message: 'Thông tin chi tiết bài tin tức',
       data: res
@@ -46,19 +44,16 @@ const getNews = async (_id) => {
   }
 }
 
-const updateNews = async (_id, reqBody) => {
+const updateNews = async (id, reqBody) => {
   try {
-    const res = await News.findByIdAndUpdate(_id, reqBody, {
-      new: true,
-      runValidators: true
-    })
+    const res = await db.News.update(reqBody, { where: { id } })
     if (!res) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Không tìm thấy bài đăng')
     }
     return {
       message: 'Sửa thông tin thành công',
       data: {
-        _id: res._id,
+        id: res.id,
         title: res.title
       }
     }
@@ -67,39 +62,39 @@ const updateNews = async (_id, reqBody) => {
   }
 }
 
-const deleteNews = async (_id) => {
+const deleteNews = async (id) => {
   try {
-    await News.deleteOne({ _id })
+    await db.News.destroy({ where: { id } })
     return { message: 'Xóa bài tin tức thành công' }
   } catch (error) {
     throw error
   }
 }
 
-const addImages = async (reqBody) => {
-  try {
-    const res = await Gallery.create({ ...reqBody })
-    return {
-      message: 'Thêm hình thành công',
-      data: {
-        ...res._doc
-      }
-    }
-  } catch (error) {
-    throw error
-  }
-}
+// const addImages = async (reqBody) => {
+//   try {
+//     const res = await Gallery.create({ ...reqBody })
+//     return {
+//       message: 'Thêm hình thành công',
+//       data: {
+//         ...res._doc
+//       }
+//     }
+//   } catch (error) {
+//     throw error
+//   }
+// }
 
-const getAllImages = async () => {
-  try {
-    const res = await Gallery.find().select('-__v -createdAt').sort({ createdAt: -1 })
-    return {
-      message: 'Tất cả hình ảnh',
-      data: res
-    }
-  } catch (error) {
-    throw error
-  }
-}
+// const getAllImages = async () => {
+//   try {
+//     const res = await Gallery.find().select('-__v -createdAt').sort({ createdAt: -1 })
+//     return {
+//       message: 'Tất cả hình ảnh',
+//       data: res
+//     }
+//   } catch (error) {
+//     throw error
+//   }
+// }
 
-export const newsService = { createNews, getAllNews, getNews, updateNews, deleteNews, addImages, getAllImages }
+export const newsService = { createNews, getAllNews, getNews, updateNews, deleteNews }

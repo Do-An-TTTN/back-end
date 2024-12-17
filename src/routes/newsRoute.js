@@ -13,7 +13,7 @@ router.post('', newsController.createNews)
 router.put('/:id', newsController.updateNews)
 router.delete('/:id', newsController.deleteNews)
 // --------- route về Images
-router.post('/gallery', newsController.addImages)
-router.get('/gallery', newsController.getAllImages)
+// router.post('/gallery', newsController.addImages)
+// router.get('/gallery', newsController.getAllImages)
 
 export const newsRoute = router

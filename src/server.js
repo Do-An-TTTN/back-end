@@ -2,7 +2,7 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
-import { connectDB } from '~/config/connectDB'
+import connectDB from '~/config/connectDB'
 import { env } from '~/config/environment'
 import { errorHandlingMiddleware } from '~/middlewares/exampleMiddleware'
 import { API } from '~/routes'
