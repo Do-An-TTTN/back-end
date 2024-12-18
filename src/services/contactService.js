@@ -15,7 +15,7 @@ const createContact = async (reqBody) => {
 
 const getAllContact = async () => {
   try {
-    const res = await db.Contact.findAll()
+    const res = await db.Contact.findAll({ order: [['createdAt', 'DESC']] })
 
     return {
       message: 'Lấy tất cả thông tin liên hệ',
@@ -28,7 +28,7 @@ const getAllContact = async () => {
 
 const deleteContact = async (id) => {
   try {
-    await db.Contact.deleteOne({ where: { id } })
+    await db.Contact.destroy({ where: { id } })
 
     return {
       message: 'Xóa thành công',

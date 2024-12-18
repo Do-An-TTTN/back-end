@@ -21,7 +21,10 @@ const createNews = async (reqBody) => {
 
 const getAllNews = async () => {
   try {
-    const res = await db.News.findAll({ include: { model: db.User, attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } } })
+    const res = await db.News.findAll({
+      include: { model: db.User, attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } },
+      order: [['createdAt', 'DESC']]
+    })
 
     return {
       message: 'Tất cả bảng tin',
@@ -70,31 +73,5 @@ const deleteNews = async (id) => {
     throw error
   }
 }
-
-// const addImages = async (reqBody) => {
-//   try {
-//     const res = await Gallery.create({ ...reqBody })
-//     return {
-//       message: 'Thêm hình thành công',
-//       data: {
-//         ...res._doc
-//       }
-//     }
-//   } catch (error) {
-//     throw error
-//   }
-// }
-
-// const getAllImages = async () => {
-//   try {
-//     const res = await Gallery.find().select('-__v -createdAt').sort({ createdAt: -1 })
-//     return {
-//       message: 'Tất cả hình ảnh',
-//       data: res
-//     }
-//   } catch (error) {
-//     throw error
-//   }
-// }
 
 export const newsService = { createNews, getAllNews, getNews, updateNews, deleteNews }

@@ -22,7 +22,7 @@ const createNew = async (reqBody) => {
 
 const getAll = async () => {
   try {
-    const res = await db.Course.findAll({ include: { model: db.Category } })
+    const res = await db.Course.findAll({ include: { model: db.Category }, order: [['createdAt', 'DESC']] })
 
     return {
       message: 'Lấy tất cả sản phẩm',

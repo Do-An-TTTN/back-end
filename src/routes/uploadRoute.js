@@ -18,22 +18,49 @@ const multerFilter = (req, file, cb) => {
 }
 
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter })
-const uploadCoursePhoto = upload.single('image')
+const uploadPhoto = upload.single('image')
+const uploadMultiplePhoto = upload.array('images', 10)
 
-const resizeCoursePhoto = async (req, res, next) => {
-  if (!req.file) return
-  const fileName = `course-${Date.now()}.jpeg`
-  req.file.filename = fileName
-  await sharp(req.file.buffer).resize(400, 600).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/images/course/${fileName}`)
+const resizePhoto = (name) => {
+  return async (req, res, next) => {
+    if (!req.file) return
+    const fileName = `${name}-${Date.now()}.jpeg`
+    req.file.filename = fileName
+    await sharp(req.file.buffer).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/images/${name}/${fileName}`)
 
-  let imageUrl = ''
-  if (env.BUILD_MODE === 'development') {
-    imageUrl = `http://localhost:4000/images/course/${fileName}`
-  } else {
-    imageUrl = `/images/course/${fileName}`
+    let imageUrl = ''
+    if (env.BUILD_MODE === 'development') {
+      imageUrl = `http://localhost:4000/images/${name}/${fileName}`
+    } else {
+      imageUrl = `${env.DOMAIN_NAME}/images/${name}/${fileName}`
+    }
+    return res.json({ imageUrl })
   }
-  return res.json({ imageUrl })
 }
-router.post('/course', uploadCoursePhoto, resizeCoursePhoto)
+
+const resizeNewsImages = async (req, res, next) => {
+  if (!req.files) return
+
+  let images = []
+  await Promise.all(
+    req?.files.map(async (file, index) => {
+      const fileName = `news-${Date.now()}-${index + 1}.jpeg`
+      await sharp(file.buffer).resize(2000, 1333).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/images/news/${fileName}`)
+
+      let imageUrl = ''
+      if (env.BUILD_MODE === 'development') {
+        imageUrl = `http://localhost:4000/images/news/${fileName}`
+      } else {
+        imageUrl = `${env.DOMAIN_NAME}/images/news/${fileName}`
+      }
+      images.push(imageUrl)
+    })
+  )
+  return res.json({ images })
+}
+
+router.post('/course', uploadPhoto, resizePhoto('course'))
+router.post('/news/single', uploadPhoto, resizePhoto('news'))
+router.post('/news/multiple', uploadMultiplePhoto, resizeNewsImages)
 
 export const uploadRoute = router
