@@ -2,13 +2,14 @@ import { env } from '~/config/environment'
 import { StatusCodes } from 'http-status-codes'
 import ApiError from '~/utils/ApiError'
 
-const WHITELIST_DOMAINS = [
-  // 'http://localhost:5173',
-  'https://star-english.vercel.app'
-]
+const WHITELIST_DOMAINS = ['http://localhost:5175', 'https://star-english.vercel.app']
 export const corsOptions = {
   origin: function (origin, callback) {
-    if (env.BUILD_MODE === 'development') {
+    if (env.NODE_ENV === 'development') {
+      return callback(null, true)
+    }
+
+    if (!origin) {
       return callback(null, true)
     }
 

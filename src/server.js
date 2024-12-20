@@ -23,9 +23,9 @@ app.use('/api', API)
 
 app.use(errorHandlingMiddleware)
 
-if (env.BUILD_MODE === 'production') {
-  app.listen(process.env.PORT, () => {
-    console.log(`Production environment, I am running at PORT ${process.env.PORT}`)
+if (env.NODE_ENV === 'production') {
+  app.listen(env.PRODUCTION_APP_PORT, () => {
+    console.log(`Server is running ${env.LOCAL_DEV_APP_HOST}:${env.PRODUCTION_APP_PORT}`)
   })
 } else {
   app.listen(env.LOCAL_DEV_APP_PORT, () => {

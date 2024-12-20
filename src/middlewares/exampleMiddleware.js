@@ -11,7 +11,7 @@ export const errorHandlingMiddleware = (err, req, res, next) => {
     stack: err.stack
   }
 
-  if (env.BUILD_MODE !== 'development') delete responseError.stack
+  if (env.NODE_ENV !== 'development') delete responseError.stack
   // Trả responseError về phía Front-end
   res.status(responseError.statusCode).json(responseError)
 }

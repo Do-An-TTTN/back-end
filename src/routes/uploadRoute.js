@@ -29,7 +29,7 @@ const resizePhoto = (name) => {
     await sharp(req.file.buffer).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/images/${name}/${fileName}`)
 
     let imageUrl = ''
-    if (env.BUILD_MODE === 'development') {
+    if (env.NODE_ENV === 'development') {
       imageUrl = `http://localhost:4000/images/${name}/${fileName}`
     } else {
       imageUrl = `${env.DOMAIN_NAME}/images/${name}/${fileName}`
@@ -48,7 +48,7 @@ const resizeNewsImages = async (req, res, next) => {
       await sharp(file.buffer).resize(2000, 1333).toFormat('jpeg').jpeg({ quality: 90 }).toFile(`public/images/news/${fileName}`)
 
       let imageUrl = ''
-      if (env.BUILD_MODE === 'development') {
+      if (env.NODE_ENV === 'development') {
         imageUrl = `http://localhost:4000/images/news/${fileName}`
       } else {
         imageUrl = `${env.DOMAIN_NAME}/images/news/${fileName}`

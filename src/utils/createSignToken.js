@@ -13,7 +13,7 @@ export const createSignToken = (user, statusCode, res) => {
     expires: new Date(Date.now() + env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
     httpOnly: true
   }
-  if (env.BUILD_MODE === 'production') {
+  if (env.NODE_ENV === 'production') {
     cookieOptions.secure = true
   } else {
     cookieOptions.secure = false
